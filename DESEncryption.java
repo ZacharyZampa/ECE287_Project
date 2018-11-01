@@ -14,7 +14,8 @@ public class DESEncryption {
 
 	public static void main(String[] args) {
 		// set up variables
-		String ogString = "", newString = "";
+		String ogString = "", newString = "", key;
+		char choice;
 		System.out.print("Enter 4 characters through .txt file or manually?");
 		if ("manually".equals(keyboard.next()))
 		{
@@ -31,6 +32,14 @@ public class DESEncryption {
 			
 		}
 		
+		System.out.print("Please Enter the Key in HexaDecimal: ");
+		key = keyboard.nextLine();
+		
+		System.out.print("Encryption or Decryption: ");
+		choice = keyboard.next().charAt(0);
+		keyboard.close();
+		
+		
 		newString = des(ogString);
 		
 		
@@ -43,4 +52,5 @@ public class DESEncryption {
 		
 		return null; //return modified input
 	} // end des method
+	
 }
