@@ -23,7 +23,7 @@ public class DES_Encryption {
 		boolean[][] subKeys = generateSubKeys(strKey);
 
 		String strMessage = "0123456789ABCDEF";
-		boolean[] initialPermutation = initialPermutation(String strMessage);
+		boolean[] messageDES = messageDES(strMessage, subkeys);
 		
 		
 //		System.out.print("process ints or chars? ");
@@ -71,6 +71,16 @@ public class DES_Encryption {
 	            59    51   43    35    27   19    11    3
 	            61    53   45    37    29   21    13    5
 	            63    55   47    39    31   23    15    7}; // use helper to remove spaces
+	
+	public static int[] finalpermute = new int[] {
+	            40     8   48    16    56   24    64   32
+	            39     7   47    15    55   23    63   31
+	            38     6   46    14    54   22    62   30
+	            37     5   45    13    53   21    61   29
+	            36     4   44    12    52   20    60   28
+	            35     3   43    11    51   19    59   27
+	            34     2   42    10    50   18    58   26
+	            33     1   41     9    49   17    57   25}; // use helper to remove spaces
 
 	// Given a hexadecmial key, generate the 16 subkeys needed for the encryption algorithm
 	public static boolean[][] generateSubKeys(String strKey) {
@@ -214,8 +224,8 @@ public class DES_Encryption {
 //	} // end charProcess method
 	
 	
-	
-	public static boolean[][] initialPermutation(String strMessage) {
+	// modify original message then conduct rounds to encypt
+	public static boolean[] messageDES(String strMessage, subkeys[][]) {
 	    
 	    // convert message to binary
 	    boolean[] message = new boolean[64];
@@ -234,6 +244,20 @@ public class DES_Encryption {
                     permutedMessage[i] = message[initialpermute[i]-1];
             }
             
-	}
+            // separate the message into two halves
+            boolean[] left = new boolean[32];
+            boolean[] right = new boolean[32];
+            
+            for (int i = 0; i < message.length; i++)
+            {
+                if(i < 32)
+                    left[i] = message[i];
+                else
+                    right[i] = message[i+32];
+            }
+            
+	} // end initialPermutation method
+	
+	
 
 }
