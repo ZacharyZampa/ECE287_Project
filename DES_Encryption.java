@@ -22,7 +22,7 @@ public class DES_Encryption {
 		boolean[][] subKeys = generateSubKeys(strKey);
 
 		String strMessage = "0123456789ABCDEF";
-		boolean[] messageDES = messageDES(strMessage, subkeys);
+		boolean[] messageDES = messageDES(strMessage, subKeys);
 		
 		
 //		System.out.print("process ints or chars? ");
@@ -80,6 +80,15 @@ public class DES_Encryption {
 	            35     3   43    11    51   19    59   27
 	            34     2   42    10    50   18    58   26
 	            33     1   41     9    49   17    57   25}; // use helper to remove spaces
+	
+	public static int[] exPermute = new int[] { 32     1    2     3     4    5
+                4     5    6     7     8    9
+                8     9   10    11    12   13
+               12    13   14    15    16   17
+               16    17   18    19    20   21
+               20    21   22    23    24   25
+               24    25   26    27    28   29
+               28    29   30    31    32    1}; // use helper to remove spaces
 
 	// Given a hexadecmial key, generate the 16 subkeys needed for the encryption algorithm
 	public static boolean[][] generateSubKeys(String strKey) {
@@ -147,11 +156,11 @@ public class DES_Encryption {
 			if (i % groupSize == groupSize - 1)
 				System.out.print(" ");
 		}
-		System.out.println();	}
+		System.out.println();
+	}
 
 	
 
-        }
 
 
 //	// create int array to process
@@ -186,7 +195,7 @@ public class DES_Encryption {
 //
 //		return ogInput;
 
-	} // end intProcess method
+//	} // end intProcess method
 
 //	// create char array to process
 //	public static char[] charProcess(char[] ogInput)
@@ -223,12 +232,12 @@ public class DES_Encryption {
 //	} // end charProcess method
 	
 	
-	// modify original message then conduct rounds to encypt
-	public static boolean[] messageDES(String strMessage, subkeys[][]) {
+	// modify original message then conduct rounds to encrypt
+	public static boolean[] messageDES(String strMessage, boolean[][] subkeys) {
 	    
 	    // convert message to binary
 	    boolean[] message = new boolean[64];
-            String bits = Long.toString(Long.parseLong(strKey.toLowerCase(), 16), 2);
+            String bits = Long.toString(Long.parseLong(strMessage.toLowerCase(), 16), 2);
             int bit = 63;
             for (int i = 0; i < bits.length(); i++) 
             {
@@ -255,7 +264,31 @@ public class DES_Encryption {
                     right[i] = message[i+32];
             }
             
-	} // end initialPermutation method
+            // make the expansion array: the right message half expands to 48 bits 
+            boolean[] expanded = new boolean[48];
+            for (int i = 0; i < 48; i++)
+            {
+                expanded[i] = right[exPermute[i]-1];
+            }
+            // A note: I believe the following expansions are derived from the modified message from the prior round         
+            
+            
+            // XOR Operation between expanded right and corresponding round key
+            boolean[] xorOperated = new boolean[48];
+            for (int i = 0; i < 48; i++)
+            {
+                xorOperated[i] = expanded[i] ^ subkeys[0][i]; // can be changed to work for each iteration if needed
+                
+            }
+            
+            
+            // Substitution (S) Boxes - 8 boxes: 6 bit input, 4 bit output
+            
+            
+            
+            
+            
+	} // end messageDES method
 	
 	
 
