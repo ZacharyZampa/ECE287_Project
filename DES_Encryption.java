@@ -19,12 +19,26 @@ public class DES_Encryption {
 	public static void main(String[] args) {
 		
 		String strKey = "133457799BBCDFF1";
-		boolean[][] subKeys = generateSubKeys(strKey);
-
-		String strMessage = "0123456789ABCDEF";
-		boolean[] messageDES = messageDES(strMessage, subKeys);
+		boolean[][] subKeys = generateSubKeys(hex2bits(strKey, 64));
 		
-		displayBits(messageDES, 8);
+		String strMessage = "0123456789ABCDEF";
+		boolean[] message = hex2bits(strMessage, 64);
+		boolean[] encrypted = messageDES(message, subKeys);
+		
+		System.out.println("Original:");
+		displayBits(message, 8);
+		System.out.println("Encrypted:");
+		displayBits(encrypted, 8);
+		
+		
+		boolean[][] reversedSubKeys = new boolean[16][48];
+		for (int i = 0; i < 16; i++) {
+			reversedSubKeys[i] = subKeys[15-i];
+		}
+		boolean[] decrypted = messageDES(encrypted, reversedSubKeys);
+		
+		System.out.println("Decrypted:");
+		displayBits(decrypted, 8);
 		
 //		System.out.print("process ints or chars? ");
 //		char choice = keyboard.next().charAt(0);
@@ -144,17 +158,8 @@ public class DES_Encryption {
 			22, 11, 4, 25};
 	
 
-	// Given a hexadecmial key, generate the 16 subkeys needed for the encryption algorithm
-	public static boolean[][] generateSubKeys(String strKey) {
-		boolean[] key = new boolean[64];
-		String bits = Long.toString(Long.parseLong(strKey.toLowerCase(), 16), 2);
-		int bit = 63;
-		for (int i = 0; i < bits.length(); i++) {
-			key[bit] = bits.charAt(bits.length() - 1 - i) == '1';
-			bit--;
-		}
-
-		//displayBits(key, 8); // show the key converted from hex to binary
+	// Given a 64-bit key, generate the 16 subkeys needed for the encryption algorithm
+	public static boolean[][] generateSubKeys(boolean[] key) {
 
 		boolean[] permutedKey = new boolean[56];
 		for (int i = 0; i < 56; i++) {
@@ -285,20 +290,21 @@ public class DES_Encryption {
 //
 //	} // end charProcess method
 	
+	// Convert a hexdecimal string hex into a bit array of length nBits
+	public static boolean[] hex2bits(String hex, int nBits) {
+		 boolean[] bits = new boolean[64];
+         String bitStr = Long.toString(Long.parseLong(hex.toLowerCase(), 16), 2);
+         int bit = nBits - 1;
+         for (int i = 0; i < bitStr.length(); i++) 
+         {
+                 bits[bit] = bitStr.charAt(bitStr.length() - 1 - i) == '1';
+                 bit--;
+         }
+         return bits;
+	}
 	
 	// modify original message then conduct rounds to encrypt
-	public static boolean[] messageDES(String strMessage, boolean[][] subkeys) {
-	    
-	    // convert message to binary
-	    boolean[] message = new boolean[64];
-            String bits = Long.toString(Long.parseLong(strMessage.toLowerCase(), 16), 2);
-            int bit = 63;
-            for (int i = 0; i < bits.length(); i++) 
-            {
-                    message[bit] = bits.charAt(bits.length() - 1 - i) == '1';
-                    bit--;
-            }
-            
+	public static boolean[] messageDES(boolean[] message, boolean[][] subkeys) {
             // permute the message
             boolean[] permutedMessage = new boolean[64];
             for (int i = 0; i < 64; i++) 
@@ -318,9 +324,6 @@ public class DES_Encryption {
                     right[i-32] = permutedMessage[i];
             }
             
-            System.out.println(subkeys.length);
-            
-            //boolean[] fOutput = f(right, subkeys[0]);
             
             for (int i = 0; i < 16; i++) {
             	boolean[] fOutput = f(right, subkeys[i]);
@@ -370,12 +373,6 @@ public class DES_Encryption {
         
         // XOR Operation between expanded right and corresponding round key
         boolean[] xorOperated = xorBits(expanded, K);
-//        
-//        for (int i = 0; i < 48; i++)
-//        {
-//            xorOperated[i] = expanded[i] ^ K[i]; // can be changed to work for each iteration if needed
-//            
-//        }
         
         boolean[] concatedSValues = new boolean[32];
         int concatedSValuesPosition = 0;
