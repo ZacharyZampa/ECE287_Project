@@ -17,18 +17,29 @@ module LCD_Input(
 	assign    LCD_ON   = 1'b1;
 	assign    LCD_BLON = 1'b1;
 	
+	parameter key = 64'h133457799BBCDFF1;
+	
 	
 	// -------------------Instantiate Bit_Input Module----------------------
 	wire [63:0] values;
-	Bit_Input bits(values[63:0], in0,in1,in2,in3, loadButton, rst, CLOCK_50, testRST, testLoad);
+	wire [4:0] nEntered;
+	Bit_Input bits(values[63:0], in0,in1,in2,in3, loadButton, rst, CLOCK_50, testRST, testLoad, nEntered);
+	
+	// -------------------Instantiate Module with the DES algorithm itself------
+	wire [63:0] outValues;
+	DES_Encrypter encrypter(values, key, outValues, 1'b0);
 	
 	// -------------------Instantiate Bit_Converter Module----------------------
 	wire [143:0] realLetter;
+	wire [143:0] outHexChars;
+	
 	generate // generate 16 bit converter modules through for loop
 		genvar ii;
-		for(ii = 0; ii< 16; ii = ii+1) begin : generate_block_identifier
-			Bit_Converter bits(realLetter[143-9*ii -: 9], values[63-4*ii -:4]); // make each hex value accessible to LCD
-		end
+		for(ii = 0; ii < 16; ii = ii+1) begin : generate_block_identifier
+			Bit_Converter bits(realLetter[143-9*ii -: 9], values[63-4*ii -:4], nEntered > ii); // make each hex value accessible to LCD
+
+			Bit_Converter outBits(outHexChars[143-9*ii -: 9], outValues[63-4*ii -:4], nEntered == 5'd16);
+			end
 	endgenerate
 	
 	
@@ -38,6 +49,7 @@ module LCD_Input(
 		.iCLK(CLOCK_50),
 		.iRST_N(loadButton),
 		.realLetter(realLetter),
+		.outHexChars(outHexChars),
 	// LCD Side
 		.LCD_DATA(LCD_DATA),
 		.LCD_RW(LCD_RW),
@@ -49,7 +61,7 @@ endmodule
 module    LCD_TEST (
 // Host Side
   input iCLK,iRST_N,
-  input [143:0] realLetter,
+  input [143:0] realLetter, outHexChars,
 // LCD Side
   output [7:0]     LCD_DATA,
   output LCD_RW,LCD_EN,LCD_RS    
@@ -146,23 +158,23 @@ begin
     //    Change Line
     LCD_CH_LINE:    LUT_DATA    <=    9'h0C0;
     //    Line 2
-    LCD_LINE2+0:    LUT_DATA    <=    9'h168;   
-    LCD_LINE2+1:    LUT_DATA    <=    9'h161;
-    LCD_LINE2+2:    LUT_DATA    <=    9'h176;
-    LCD_LINE2+3:    LUT_DATA    <=    9'h165;
-    LCD_LINE2+4:    LUT_DATA    <=    9'h16E;
-    LCD_LINE2+5:    LUT_DATA    <=    9'h127;
-    LCD_LINE2+6:    LUT_DATA    <=    9'h174;
-    LCD_LINE2+7:    LUT_DATA    <=    9'h120;
-    LCD_LINE2+8:    LUT_DATA    <=    9'h164;
-    LCD_LINE2+9:    LUT_DATA    <=    9'h16F;
-    LCD_LINE2+10:    LUT_DATA    <=    9'h16E;
-    LCD_LINE2+11:    LUT_DATA    <=    9'h165;
-    LCD_LINE2+12:    LUT_DATA    <=    9'h120;
-    LCD_LINE2+13:    LUT_DATA    <=    9'h179;
-    LCD_LINE2+14:    LUT_DATA    <=    9'h165;
-    LCD_LINE2+15:    LUT_DATA    <=    9'h174;
-    default:        LUT_DATA    <=    9'dx ;
+    LCD_LINE2+0:    LUT_DATA    <=    outHexChars[143:135];   
+    LCD_LINE2+1:    LUT_DATA    <=    outHexChars[134:126];
+    LCD_LINE2+2:    LUT_DATA    <=    outHexChars[125:117];
+    LCD_LINE2+3:    LUT_DATA    <=    outHexChars[116:108];
+    LCD_LINE2+4:    LUT_DATA    <=    outHexChars[107:99];
+    LCD_LINE2+5:    LUT_DATA    <=    outHexChars[98:90];
+    LCD_LINE2+6:    LUT_DATA    <=    outHexChars[89:81];
+    LCD_LINE2+7:    LUT_DATA    <=    outHexChars[80:72];
+    LCD_LINE2+8:    LUT_DATA    <=    outHexChars[71:63];
+    LCD_LINE2+9:    LUT_DATA    <=    outHexChars[62:54];
+    LCD_LINE2+10:    LUT_DATA    <=    outHexChars[53:45];
+    LCD_LINE2+11:    LUT_DATA    <=    outHexChars[44:36];
+    LCD_LINE2+12:    LUT_DATA    <=    outHexChars[35:27];
+    LCD_LINE2+13:    LUT_DATA    <=    outHexChars[26:18];
+    LCD_LINE2+14:    LUT_DATA    <=    outHexChars[17:9];
+    LCD_LINE2+15:    LUT_DATA    <=    outHexChars[8:0];
+    default:        LUT_DATA    <=    9'dx;
     endcase
 end
 
