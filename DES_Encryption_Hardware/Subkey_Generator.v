@@ -9,8 +9,15 @@ module Subkey_Generator(key, subkey0, subkey1, subkey2,subkey3,subkey4,subkey5,s
 			wire [47:0]subkey0, subkey1, subkey2,subkey3,subkey4,subkey5,subkey6,subkey7,
 			subkey8, subkey9, subkey10, subkey11, subkey12, subkey13, subkey14, subkey15;
 			
-			assign keyCheck = {c0[26], key[41], key[38], key[20], 60'h0};
-			
+			assign keyCheck = {key[63], key[62], key[61], key[60], key[59], key[58], key[57], key[56], 
+									key[55], key[54], key[53], key[52], key[51], key[50], key[49], key[48], 
+									key[47], key[46], key[45], key[44], key[43], key[42], key[41], key[40], 
+									key[39], key[38], key[37], key[36], key[35], key[34], key[33], key[32], 
+									key[31], key[30], key[29], key[28], key[27], key[26], key[25], key[24], 
+									key[23], key[22], key[21], key[20], key[19], key[18], key[17], key[16], 
+									key[15], key[14], key[13], key[12], key[11], key[10], key[9], key[8], 
+									key[7], key[6], key[5], key[4], key[3], key[2], key[1], key[0]};
+												
 			
 			// C (left) and D (right)
 			wire [27:0]c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16;

@@ -1,6 +1,6 @@
 module LCD_Input(
-  input in0, in1, in2, in3, loadButton, rst,
-  output testRST, testLoad,
+  input in0, in1, in2, in3, loadButton, backspace, clear, rst,
+  output testRST, testLoad, testBackspace, testClear,
 	//    LCD Module 16X2
   output LCD_ON,    // LCD Power ON/OFF
   output LCD_BLON,    // LCD Back Light ON/OFF
@@ -8,7 +8,8 @@ module LCD_Input(
   output LCD_EN,    // LCD Enable
   output LCD_RS,    // LCD Command/Data Select, 0 = Command, 1 = Data
   inout [7:0] LCD_DATA,    // LCD Data bus 8 bits
-  input CLOCK_50
+  input CLOCK_50,
+  output [3:0] S // test output
 	);
 
 	//wire DLY_RST;
@@ -23,7 +24,7 @@ module LCD_Input(
 	// -------------------Instantiate Bit_Input Module----------------------
 	wire [63:0] values;
 	wire [4:0] nEntered;
-	Bit_Input bits(values[63:0], in0,in1,in2,in3, loadButton, rst, CLOCK_50, testRST, testLoad, nEntered);
+	Bit_Input bits(values[63:0], in0,in1,in2,in3, loadButton, backspace, clear, rst, CLOCK_50, testRST, testLoad, testBackspace, testClear, nEntered, S);
 	
 	// -------------------Instantiate Module with the DES algorithm itself------
 	wire [63:0] outValues;
@@ -47,7 +48,7 @@ module LCD_Input(
 	LCD_TEST u1(
 	// Host Side
 		.iCLK(CLOCK_50),
-		.iRST_N(loadButton),
+		.iRST_N(loadButton & backspace & clear),
 		.realLetter(realLetter),
 		.outHexChars(outHexChars),
 	// LCD Side
