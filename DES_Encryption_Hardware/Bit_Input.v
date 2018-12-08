@@ -8,6 +8,7 @@ module Bit_Input (values, in0,in1,in2,in3, loadButton, backspace, clear, rst, cl
 	reg [5:0] cursor;
 	reg [63:0] values;
 	
+	
 	// State machine implementation
 	reg [3:0] S;
 	parameter AWAITING_ENTRY = 4'b0000,
@@ -37,7 +38,7 @@ module Bit_Input (values, in0,in1,in2,in3, loadButton, backspace, clear, rst, cl
 		if(rst == 1'b0)
 		begin
 			cursor <= 6'd63;
-			values <= 64'd0;
+			values <= 64'b0000000100100011010001010110011110001001101010111100110111101111;
 			nEntered <= 5'd0;
 			S <= AWAITING_ENTRY;
 		end
