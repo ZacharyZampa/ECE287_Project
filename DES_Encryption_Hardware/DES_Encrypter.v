@@ -33,23 +33,25 @@ module DES_Encrypter(inValues, key, outValues, decrypt);
 
 	// End define l0 and r0 -------------------------------------------------------------			
 			
+			
+	// if SW15 1'b1 if the module should decrypt, rather than encrypt		
 	// f fuctions -----------------------------------------------------------------------		
-		fFunction f0(r0, subkey1, foutput0);
-		fFunction f1(r1, subkey2, foutput1);
-		fFunction f2(r2, subkey3, foutput2);
-		fFunction f3(r3, subkey4, foutput3);
-		fFunction f4(r4, subkey5, foutput4);
-		fFunction f5(r5, subkey6, foutput5);
-		fFunction f6(r6, subkey7, foutput6);
-		fFunction f7(r7, subkey8, foutput7);
-		fFunction f8(r8, subkey9, foutput8);
-		fFunction f9(r9, subkey10, foutput9);
-		fFunction f10(r10, subkey11, foutput10);
-		fFunction f11(r11, subkey12, foutput11);
-		fFunction f12(r12, subkey13, foutput12);
-		fFunction f13(r13, subkey14, foutput13);
-		fFunction f14(r14, subkey15, foutput14);
-		fFunction f15(r15, subkey16, foutput15);
+		fFunction f0(r0, (decrypt? subkey16 : subkey1), foutput0);
+		fFunction f1(r1, (decrypt? subkey15 : subkey2), foutput1);
+		fFunction f2(r2, (decrypt? subkey14 : subkey3), foutput2);
+		fFunction f3(r3, (decrypt? subkey13 : subkey4), foutput3);
+		fFunction f4(r4, (decrypt? subkey12 : subkey5), foutput4);
+		fFunction f5(r5, (decrypt? subkey11 : subkey6), foutput5);
+		fFunction f6(r6, (decrypt? subkey10 : subkey7), foutput6);
+		fFunction f7(r7, (decrypt? subkey9 : subkey8), foutput7);
+		fFunction f8(r8, (decrypt? subkey8 : subkey9), foutput8);
+		fFunction f9(r9, (decrypt? subkey7 : subkey10), foutput9);
+		fFunction f10(r10, (decrypt? subkey6 : subkey11), foutput10);
+		fFunction f11(r11, (decrypt? subkey5 : subkey12), foutput11);
+		fFunction f12(r12, (decrypt? subkey4 : subkey13), foutput12);
+		fFunction f13(r13, (decrypt? subkey3 : subkey14), foutput13);
+		fFunction f14(r14, (decrypt? subkey2 : subkey15), foutput14);
+		fFunction f15(r15, (decrypt? subkey1 : subkey16), foutput15);
 	// End f fuctions --------------------------------------------------------------------	
 			
 			

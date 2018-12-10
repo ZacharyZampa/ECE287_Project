@@ -9,6 +9,7 @@ module LCD_Input(
   output LCD_RS,    // LCD Command/Data Select, 0 = Command, 1 = Data
   inout [7:0] LCD_DATA,    // LCD Data bus 8 bits
   input CLOCK_50,
+  input decrypt,
   output [3:0] S // test output
 	);
 
@@ -28,7 +29,7 @@ module LCD_Input(
 	
 	// -------------------Instantiate Module with the DES algorithm itself------
 	wire [63:0] outValues;
-	DES_Encrypter encrypter(values, key, outValues, 1'b0);
+	DES_Encrypter encrypter(values, key, outValues, decrypt);
 	
 	// -------------------Instantiate Bit_Converter Module----------------------
 	wire [143:0] realLetter;
