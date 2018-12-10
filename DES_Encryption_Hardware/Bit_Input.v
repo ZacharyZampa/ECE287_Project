@@ -38,7 +38,7 @@ module Bit_Input (values, in0,in1,in2,in3, loadButton, backspace, clear, rst, cl
 		if(rst == 1'b0)
 		begin
 			cursor <= 6'd63;
-			values <= 64'b0000000100100011010001010110011110001001101010111100110111101111;
+			values <= 64'd0;
 			nEntered <= 5'd0;
 			S <= AWAITING_ENTRY;
 		end
@@ -98,7 +98,7 @@ module Bit_Input (values, in0,in1,in2,in3, loadButton, backspace, clear, rst, cl
 			end
 			BITS_ENTERED:
 			begin
-				if (nEntered < 5'd16)
+				if (nEntered != 5'd16)
 					NS = AWAITING_ENTRY;
 				else
 					NS = SHOW_RESULT;

@@ -39,7 +39,7 @@ module LCD_Input(
 		for(ii = 0; ii < 16; ii = ii+1) begin : generate_block_identifier
 			Bit_Converter bits(realLetter[143-9*ii -: 9], values[63-4*ii -:4], nEntered > ii); // make each hex value accessible to LCD
 
-			Bit_Converter outBits(outHexChars[143-9*ii -: 9], outValues[63-4*ii -:4], 1'b1);
+			Bit_Converter outBits(outHexChars[143-9*ii -: 9], outValues[63-4*ii -:4], nEntered >= 5'd16);
 			end
 	endgenerate
 	

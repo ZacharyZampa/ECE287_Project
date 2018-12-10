@@ -88,34 +88,18 @@ module fFunction(r, subkey, foutput);
 
 	
 	// combine sbox outputs
-	assign postSBox = {n8, n7, n6, n5, n4, n3, n2, n1};
+	assign postSBox = {n1, n2, n3, n4, n5, n6, n7, n8};
 	
-	assign foutput = {postSBox[0], postSBox[1], postSBox[2], postSBox[3], postSBox[4], postSBox[5], postSBox[6], postSBox[7], 
-				postSBox[8], postSBox[9], postSBox[10], postSBox[11], postSBox[12], postSBox[13], postSBox[14], postSBox[15], 
-				postSBox[16], postSBox[17], postSBox[18], postSBox[19], postSBox[20], postSBox[21], postSBox[22], postSBox[23], 
-				postSBox[24], postSBox[25], postSBox[26], postSBox[27], postSBox[28], postSBox[29], postSBox[30], postSBox[31]};
-	
-	// permute
-	
-	
-	// revert array to original order (unmirror)
-//	assign foutput = {postSBox[15], postSBox[6], postSBox[19], postSBox[20], 
-//							postSBox[28], postSBox[11], postSBox[27], postSBox[16], 
-//							postSBox[0], postSBox[14], postSBox[22], postSBox[25], 
-//							postSBox[4], postSBox[17], postSBox[30], postSBox[9], 
-//							postSBox[1], postSBox[7], postSBox[23], postSBox[13], 
-//							postSBox[31], postSBox[26], postSBox[2], postSBox[8], 
-//							postSBox[18], postSBox[12], postSBox[29], postSBox[5], 
-//							postSBox[21], postSBox[10], postSBox[3], postSBox[24] };
+	// final f function permutation
+	assign foutput = {postSBox[16], postSBox[25], postSBox[12], postSBox[11], 
+							postSBox[3], postSBox[20], postSBox[4], postSBox[15], 
+							postSBox[31], postSBox[17], postSBox[9], postSBox[6], 
+							postSBox[27], postSBox[14], postSBox[1], postSBox[22], 
+							postSBox[30], postSBox[24], postSBox[8], postSBox[18], 
+							postSBox[0], postSBox[5], postSBox[29], postSBox[23], 
+							postSBox[13], postSBox[19], postSBox[2], postSBox[26], 
+							postSBox[10], postSBox[21], postSBox[28], postSBox[7] };
 
-// testing
-	//assign foutput = postSBox;
-							
-							
-							
-	// current debugging process: 
-	// f function should work up to postSbox
-							
 endmodule
 
 
