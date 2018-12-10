@@ -10,6 +10,7 @@ module LCD_Input(
   inout [7:0] LCD_DATA,    // LCD Data bus 8 bits
   input CLOCK_50,
   input decrypt,
+  input ps2ck,ps2dt, // keyboard clocks
   output [3:0] S // test output
 	);
 
@@ -19,17 +20,18 @@ module LCD_Input(
 	assign    LCD_ON   = 1'b1;
 	assign    LCD_BLON = 1'b1;
 	
-	parameter key = 64'h133457799BBCDFF1;
+	parameter key1 = 64'h133457799BBCDFF1, key2 = 64'h0000000000000000;
 	
 	
 	// -------------------Instantiate Bit_Input Module----------------------
 	wire [63:0] values;
 	wire [4:0] nEntered;
-	Bit_Input bits(values[63:0], in0,in1,in2,in3, loadButton, backspace, clear, rst, CLOCK_50, testRST, testLoad, testBackspace, testClear, nEntered, S);
+	wire screenRST;
+	Bit_Input bits(values[63:0], in0,in1,in2,in3, loadButton, backspace, clear, rst, CLOCK_50, testRST, testLoad, testBackspace, testClear, ps2ck, ps2dt, nEntered, S, screenRST);
 	
 	// -------------------Instantiate Module with the DES algorithm itself------
 	wire [63:0] outValues;
-	DES_Encrypter encrypter(values, key, outValues, decrypt);
+	Triple_DES triDES(values, key1, key2, outValues, decrypt);
 	
 	// -------------------Instantiate Bit_Converter Module----------------------
 	wire [143:0] realLetter;
@@ -49,7 +51,7 @@ module LCD_Input(
 	LCD_TEST u1(
 	// Host Side
 		.iCLK(CLOCK_50),
-		.iRST_N(loadButton & backspace & clear),
+		.iRST_N(screenRST),
 		.realLetter(realLetter),
 		.outHexChars(outHexChars),
 	// LCD Side
