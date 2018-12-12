@@ -1,9 +1,6 @@
 ﻿Authors: Jayson Rook and Zachary Zampa
- 
 Date: 12/12/2018
-
 Class: ECE 287
-
 Topic: Triple DES Encryption
 
 
@@ -84,6 +81,8 @@ A video of the system in use can be found here2. The important steps are:
 1. Read results from FPGA screen
    1. Original message is displayed on the top line
    2. Encrypted / decrypted result is displayed on the bottom line, once all 16 digits are entered
+1. (Optional) Verify process with Java DES implementation. 
+   1. This file is included in the Github Repository
 
 
 
