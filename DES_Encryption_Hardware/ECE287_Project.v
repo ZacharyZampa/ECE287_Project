@@ -1,5 +1,6 @@
 module ECE287_Project(
-  input in0, in1, in2, in3, loadButton, backspaceButton, clearButton, rst,
+  input [3:0]in,
+  input loadButton, backspaceButton, clearButton, rst,
   output testRST, testLoad, testBackspace, testClear,
 	//    LCD Module 16X2
   output LCD_ON,    // LCD Power ON/OFF
@@ -23,23 +24,23 @@ module ECE287_Project(
 	wire [63:0] values;
 	wire [4:0] nEntered;
 	wire screenRST;
-	Bit_Input bits(values[63:0], in0,in1,in2,in3, !loadButton, !backspaceButton, !clearButton, rst, CLOCK_50, testRST, testLoad, testBackspace, testClear, ps2ck, ps2dt, nEntered, S, screenRST);
+	Bit_Input bits(values[63:0], in[3:0], !loadButton, !backspaceButton, !clearButton, rst, CLOCK_50, testRST, testLoad, testBackspace, testClear, ps2ck, ps2dt, nEntered, S, screenRST);
 	
 	// -------------------Instantiate Module with the DES algorithm itself------
 	wire [63:0] outValues;
 	
 	parameter key1 = 64'h133457799BBCDFF1, key2 = 64'h0000000000000000;
-	//Triple_DES triDES(values, key1, key2, outValues, decrypt);
-	DES_Encrypter(values, key1, outValues, decrypt);
+	Triple_DES triDES(values, key1, key2, outValues, decrypt);
+	//DES_Encrypter(values, key1, outValues, decrypt);
 	
 	// -------------------Instantiate Bit_Converter Module----------------------
-	wire [143:0] realLetter;
+	wire [143:0] inHexChars;
 	wire [143:0] outHexChars;
 	
 	generate // generate 16 bit converter modules through for loop
 		genvar ii;
 		for(ii = 0; ii < 16; ii = ii+1) begin : generate_block_identifier
-			Bit_Converter bits(realLetter[143-9*ii -: 9], values[63-4*ii -:4], nEntered > ii); // make each hex value accessible to LCD
+			Bit_Converter bits(inHexChars[143-9*ii -: 9], values[63-4*ii -:4], nEntered > ii); // make each hex value accessible to LCD
 
 			Bit_Converter outBits(outHexChars[143-9*ii -: 9], outValues[63-4*ii -:4], nEntered >= 5'd16);
 		end
@@ -51,7 +52,7 @@ module ECE287_Project(
 	// Host Side
 		.iCLK(CLOCK_50),
 		.iRST_N(screenRST),
-		.realLetter(realLetter),
+		.inHexChars(inHexChars),
 		.outHexChars(outHexChars),
 	// LCD Side
 		.LCD_DATA(LCD_DATA),

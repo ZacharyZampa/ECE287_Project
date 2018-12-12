@@ -1,7 +1,7 @@
 module    LCD_Display (
 // Host Side
   input iCLK,iRST_N,
-  input [143:0] realLetter, outHexChars,
+  input [143:0] inHexChars, outHexChars,
 // LCD Side
   output [7:0]     LCD_DATA,
   output LCD_RW,LCD_EN,LCD_RS    
@@ -79,22 +79,22 @@ begin
     LCD_INTIAL+3:    LUT_DATA    <=    9'h006;
     LCD_INTIAL+4:    LUT_DATA    <=    9'h080;
     //    Line 1
-    LCD_LINE1+0:    LUT_DATA    <=    realLetter[143:135];    //First letter
-    LCD_LINE1+1:    LUT_DATA    <=    realLetter[134:126];
-    LCD_LINE1+2:    LUT_DATA    <=    realLetter[125:117];
-    LCD_LINE1+3:    LUT_DATA    <=    realLetter[116:108];
-    LCD_LINE1+4:    LUT_DATA    <=    realLetter[107:99];
-    LCD_LINE1+5:    LUT_DATA    <=    realLetter[98:90];
-    LCD_LINE1+6:    LUT_DATA    <=    realLetter[89:81];
-    LCD_LINE1+7:    LUT_DATA    <=    realLetter[80:72];
-    LCD_LINE1+8:    LUT_DATA    <=    realLetter[71:63];
-    LCD_LINE1+9:    LUT_DATA    <=    realLetter[62:54];
-    LCD_LINE1+10:    LUT_DATA    <=    realLetter[53:45];
-    LCD_LINE1+11:    LUT_DATA    <=    realLetter[44:36];
-    LCD_LINE1+12:    LUT_DATA    <=    realLetter[35:27];
-    LCD_LINE1+13:    LUT_DATA    <=    realLetter[26:18];
-    LCD_LINE1+14:    LUT_DATA    <=    realLetter[17:9];
-    LCD_LINE1+15:    LUT_DATA    <=    realLetter[8:0];
+    LCD_LINE1+0:    LUT_DATA    <=    inHexChars[143:135];    //First letter
+    LCD_LINE1+1:    LUT_DATA    <=    inHexChars[134:126];
+    LCD_LINE1+2:    LUT_DATA    <=    inHexChars[125:117];
+    LCD_LINE1+3:    LUT_DATA    <=    inHexChars[116:108];
+    LCD_LINE1+4:    LUT_DATA    <=    inHexChars[107:99];
+    LCD_LINE1+5:    LUT_DATA    <=    inHexChars[98:90];
+    LCD_LINE1+6:    LUT_DATA    <=    inHexChars[89:81];
+    LCD_LINE1+7:    LUT_DATA    <=    inHexChars[80:72];
+    LCD_LINE1+8:    LUT_DATA    <=    inHexChars[71:63];
+    LCD_LINE1+9:    LUT_DATA    <=    inHexChars[62:54];
+    LCD_LINE1+10:    LUT_DATA    <=    inHexChars[53:45];
+    LCD_LINE1+11:    LUT_DATA    <=    inHexChars[44:36];
+    LCD_LINE1+12:    LUT_DATA    <=    inHexChars[35:27];
+    LCD_LINE1+13:    LUT_DATA    <=    inHexChars[26:18];
+    LCD_LINE1+14:    LUT_DATA    <=    inHexChars[17:9];
+    LCD_LINE1+15:    LUT_DATA    <=    inHexChars[8:0];
     //    Change Line
     LCD_CH_LINE:    LUT_DATA    <=    9'h0C0;
     //    Line 2

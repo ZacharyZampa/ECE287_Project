@@ -1,7 +1,8 @@
-module Bit_Input (values, in0,in1,in2,in3, loadButton, backspace, clear, rst, clk, testRST, testLoad, testBackspace, testClear, ps2ck, ps2dt, nEntered, S, screenRST);
+module Bit_Input (values, in, loadButton, backspace, clear, rst, clk, testRST, testLoad, testBackspace, testClear, ps2ck, ps2dt, nEntered, S, screenRST);
 	output [63:0]values;
 	output testRST, testLoad, testBackspace, testClear;
-	input in0, in1, in2, in3, loadButton, backspace, clear, rst, clk;
+	input [3:0]in; 
+	input loadButton, backspace, clear, rst, clk;
 	input ps2ck,ps2dt;
 	output [4:0] nEntered; // how many digits have been entered (0-16)
 	output [3:0] S;
@@ -59,27 +60,44 @@ module Bit_Input (values, in0,in1,in2,in3, loadButton, backspace, clear, rst, cl
 			
 			if (S == ENTER_BITS)
 			begin
-				values[cursor-:4] <= {in3, in2, in1, in0};
+				case(in)
+					4'b0000: values[cursor-:4] <= 4'd0;
+					4'b0001: values[cursor-:4] <= 4'd1;
+					4'b0010: values[cursor-:4] <= 4'd2;
+					4'b0011: values[cursor-:4] <= 4'd3;
+					4'b0100: values[cursor-:4] <= 4'd4;
+					4'b0101: values[cursor-:4] <= 4'd5;
+					4'b0110: values[cursor-:4] <= 4'd6;
+					4'b0111: values[cursor-:4] <= 4'd7;
+					4'b1000: values[cursor-:4] <= 4'd8;
+					4'b1001: values[cursor-:4] <= 4'd9;
+					4'b1010: values[cursor-:4] <= 4'd10; 
+					4'b1011: values[cursor-:4] <= 4'd11;
+					4'b1100: values[cursor-:4] <= 4'd12;
+					4'b1101: values[cursor-:4] <= 4'd13;
+					4'b1110: values[cursor-:4] <= 4'd14;
+					4'b1111: values[cursor-:4] <= 4'd15;
+				endcase
 			end
 			else if (S == TRANSLATE)
 			begin
 				case(numbers)
-					16'b0000000000000001: values[cursor-:4] = 4'd0;
-					16'b0000000000000010: values[cursor-:4] = 4'd1;
-					16'b0000000000000100: values[cursor-:4] = 4'd2;
-					16'b0000000000001000: values[cursor-:4] = 4'd3;
-					16'b0000000000010000: values[cursor-:4] = 4'd4;
-					16'b0000000000100000: values[cursor-:4] = 4'd5;
-					16'b0000000001000000: values[cursor-:4] = 4'd6;
-					16'b0000000010000000: values[cursor-:4] = 4'd7;
-					16'b0000000100000000: values[cursor-:4] = 4'd8;
-					16'b0000001000000000: values[cursor-:4] = 4'd9;
-					16'b0000010000000000: values[cursor-:4] = 4'd10;
-					16'b0000100000000000: values[cursor-:4] = 4'd11;
-					16'b0001000000000000: values[cursor-:4] = 4'd12;
-					16'b0010000000000000: values[cursor-:4] = 4'd13;
-					16'b0100000000000000: values[cursor-:4] = 4'd14;
-					16'b1000000000000000: values[cursor-:4] = 4'd15;
+					16'b0000000000000001: values[cursor-:4] <= 4'd0;
+					16'b0000000000000010: values[cursor-:4] <= 4'd1;
+					16'b0000000000000100: values[cursor-:4] <= 4'd2;
+					16'b0000000000001000: values[cursor-:4] <= 4'd3;
+					16'b0000000000010000: values[cursor-:4] <= 4'd4;
+					16'b0000000000100000: values[cursor-:4] <= 4'd5;
+					16'b0000000001000000: values[cursor-:4] <= 4'd6;
+					16'b0000000010000000: values[cursor-:4] <= 4'd7;
+					16'b0000000100000000: values[cursor-:4] <= 4'd8;
+					16'b0000001000000000: values[cursor-:4] <= 4'd9;
+					16'b0000010000000000: values[cursor-:4] <= 4'd10;
+					16'b0000100000000000: values[cursor-:4] <= 4'd11;
+					16'b0001000000000000: values[cursor-:4] <= 4'd12;
+					16'b0010000000000000: values[cursor-:4] <= 4'd13;
+					16'b0100000000000000: values[cursor-:4] <= 4'd14;
+					16'b1000000000000000: values[cursor-:4] <= 4'd15;
 				endcase
 			end
 			else if (S == CURSOR_FORWARD)
