@@ -1,6 +1,9 @@
 ﻿Authors: Jayson Rook and Zachary Zampa
+ 
 Date: 12/12/2018
+
 Class: ECE 287
+
 Topic: Triple DES Encryption
 
 
