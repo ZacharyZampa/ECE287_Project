@@ -11,7 +11,7 @@ The purpose the project is to utilize the FPGA board to conduct Triple DES Encry
 
 
 Background Information:
-The DES algorithm, as explained here, takes a 64 bit message and converts it into a string of 64 encrypted bits, using a 64-bit key (of which only 56 are actually used). In order for decryption to be possible, all the operations must not lose information - so the algorithm uses only permutations (swapping the locations of bits) and XOR operations, rather than gates like AND or OR which do not allow an input to be deduced given the output and the other input. Triple DES, which we have implemented, actually performs 3 steps:
+The DES algorithm, as explained here1, takes a 64 bit message and converts it into a string of 64 encrypted bits, using a 64-bit key (of which only 56 are actually used). In order for decryption to be possible, all the operations must not lose information - so the algorithm uses only permutations (swapping the locations of bits) and XOR operations, rather than gates like AND or OR which do not allow an input to be deduced given the output and the other input. Triple DES, which we have implemented, actually performs 3 steps:
 
 
 1. A DES encryption with a key A
@@ -32,27 +32,39 @@ The design works through a user entering values on a keyboard. The programmed bo
 Modular Design
 The project is implemented in 10 Verilog (.v) files:
 * ECE287_Project.v - the top-level entity, which instantiates modules for getting input (Bit_Input) and displaying to screen (LCD_Display)
+
+
 * LCD_Input.v - contains the LCD_Display module, which takes a clock, a screenRST (which tells the screen when to refresh), and two buses (inHexChars and outHexChars) which contain the character codes for everything the board should display
+
+
 * Bit_Input.v - invokes the keyboard module. This module also allows a user to input the values either through FPGA switches or a PS2 type keyboard. 
+
+
 * Bit_Converter.v - converts a group of 4 bits into the character code for writing the hexadecimal character on the screen
+
+
 * keyboard.v - takes pressed buttons on the PS2 type keyboard and converts them to language the FPGA board can read. 
+
+
 * PS2_Controller.v - Facilitates communication between a PS2 type keyboard and the FPGA board. 
+
+
 * Triple_DES.v - instantiates the DES encryption modules and ensures the correct key and message values gets transmitted to the corresponding DES module
-* DES_Encrypter.v - the actual DES algorithm, taking the input and key and generating an output. This module is implemented combinationally, so with each character modified in the input
+
+
+* DES_Encrypter.v - the actual DES algorithm, taking the input and key and generating an output. This module is implemented combinationally, but its output is only displayed on the screen once the user has finished inputting all 16 hexadecimal characters
+
+
 * Subkey_Generator.v - takes the original 64-bit key, and generates the 16, 48-bit subkeys needed for the main DES algorithm
+
+
 * fFunction.v - implements the Feistel function, an intermediate step used in each round of the DES encryption
-
-
-
-
-
-
 Conclusion (Summary of Project and TLDR of Report):
 In short, this project allows for a user to encrypt 64 bits of data with Triple DES levels of encryption. The user can also decrypt an encrypted value on the board as well. Part of the security of the board is the key being hidden in the board. This means that one must use a similarly programmed board to decrypt any message received. 
 
 
 How to use
-A video of the system in use can be found here. The important steps are:
+A video of the system in use can be found here2. The important steps are:
 1. Turn reset switch on (SW17)
 2. Specify encryption or decryption (SW15)
    1. High is decryption, low is encryption
@@ -71,10 +83,20 @@ A video of the system in use can be found here. The important steps are:
    2. Encrypted / decrypted result is displayed on the bottom line, once all 16 digits are entered
 
 
+
+
 Citations: 
-* The DES Algorithm Illustrated, by J. Orlin Grabbe
+1. The DES Algorithm Illustrated, by J. Orlin Grabbe
 http://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm 
-* Altera DE2 Project lcdlab1, by John Loomis
+
+
+1. Youtube Demonstration
+        https://youtu.be/E12OgBh-Sj8
+
+
+1. Altera DE2 Project lcdlab1, by John Loomis
 http://www.johnloomis.org/digitallab/lcdlab/lcdlab1/lcdlab1.html 
-* Keyboard Driver (keyboard.v and PS2_Controller.v) by Alejandro Cabrerizo and Will Zeurcher
+
+
+1. Keyboard Driver (keyboard.v and PS2_Controller.v) by Alejandro Cabrerizo and Will Zeurcher
 https://github.com/alecamaracm/ECE287Project/tree/master/VerilogExample
