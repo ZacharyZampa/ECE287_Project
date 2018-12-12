@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE115F29C7
-set_global_assignment -name TOP_LEVEL_ENTITY LCD_Input
+set_global_assignment -name TOP_LEVEL_ENTITY ECE287_Project
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 16.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "10:37:48  NOVEMBER 29, 2018"
 set_global_assignment -name LAST_QUARTUS_VERSION "16.1.0 Lite Edition"
@@ -69,36 +69,14 @@ set_global_assignment -name VERILOG_FILE Subkey_Generator.v
 set_global_assignment -name VERILOG_FILE DES_Encrypter.v
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_location_assignment PIN_AB28 -to in0
 set_location_assignment PIN_AC28 -to in1
 set_location_assignment PIN_AC27 -to in2
 set_location_assignment PIN_AD27 -to in3
 set_location_assignment PIN_R24 -to loadButton
 set_location_assignment PIN_Y23 -to rst
-set_global_assignment -name CDF_FILE output_files/Chain1.cdf
-set_global_assignment -name CDF_FILE output_files/Chain4.cdf
-set_global_assignment -name CDF_FILE output_files/Chain5.cdf
-set_global_assignment -name CDF_FILE output_files/Chain6.cdf
-set_global_assignment -name CDF_FILE output_files/Chain7.cdf
-set_global_assignment -name CDF_FILE output_files/Chain8.cdf
-set_global_assignment -name CDF_FILE output_files/Chain9.cdf
 set_location_assignment PIN_H15 -to testRST
-set_global_assignment -name CDF_FILE output_files/Chain10.cdf
-set_global_assignment -name CDF_FILE output_files/Chain11.cdf
-set_global_assignment -name CDF_FILE output_files/Chain12.cdf
-set_global_assignment -name CDF_FILE output_files/Chain13.cdf
-set_global_assignment -name CDF_FILE output_files/Chain14.cdf
-set_global_assignment -name CDF_FILE output_files/Chain15.cdf
-set_global_assignment -name CDF_FILE output_files/Chain16.cdf
 set_location_assignment PIN_G22 -to testLoad
-set_global_assignment -name CDF_FILE output_files/Chain17.cdf
-set_global_assignment -name CDF_FILE output_files/Chain18.cdf
-set_global_assignment -name CDF_FILE output_files/Chain19.cdf
-set_location_assignment PIN_N21 -to backspace
-set_location_assignment PIN_M21 -to clear
 set_location_assignment PIN_F19 -to S[1]
 set_location_assignment PIN_E19 -to S[2]
 set_location_assignment PIN_F21 -to S[3]
@@ -106,22 +84,16 @@ set_location_assignment PIN_G19 -to S[0]
 set_location_assignment PIN_E25 -to testClear
 set_location_assignment PIN_H21 -to testBackspace
 set_global_assignment -name VERILOG_FILE fFunction.v
-set_global_assignment -name CDF_FILE output_files/Chain20.cdf
-set_global_assignment -name CDF_FILE output_files/Chain21.cdf
-set_global_assignment -name CDF_FILE output_files/Chain22.cdf
-set_global_assignment -name CDF_FILE output_files/Chain23.cdf
-set_global_assignment -name CDF_FILE output_files/Chain24.cdf
-set_global_assignment -name CDF_FILE output_files/Chain26.cdf
-set_global_assignment -name CDF_FILE output_files/Chain27.cdf
-set_global_assignment -name CDF_FILE output_files/Chain28.cdf
-set_global_assignment -name CDF_FILE output_files/Chain29.cdf
-set_global_assignment -name CDF_FILE output_files/Chain30.cdf
-set_global_assignment -name CDF_FILE output_files/Chain2.cdf
-set_global_assignment -name CDF_FILE output_files/Chain3.cdf
 set_location_assignment PIN_AA22 -to decrypt
 set_global_assignment -name VERILOG_FILE PS2_Controller.v
 set_global_assignment -name VERILOG_FILE keyboard.v
 set_location_assignment PIN_H5 -to ps2dt
 set_location_assignment PIN_G6 -to ps2ck
 set_global_assignment -name VERILOG_FILE Triple_DES.v
+set_global_assignment -name VERILOG_FILE ECE287_Project.v
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_location_assignment PIN_N21 -to backspaceButton
+set_location_assignment PIN_M21 -to clearButton
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

@@ -36,11 +36,11 @@ module Bit_Input (values, in0,in1,in2,in3, loadButton, backspace, clear, rst, cl
 	
 	
 	assign testRST = rst;
-	assign testLoad = !loadButton;
-	assign testBackspace = !backspace;
-	assign testClear = !clear;
+	assign testLoad = loadButton;
+	assign testBackspace = backspace;
+	assign testClear = clear;
 	
-	assign screenRST = loadButton & backspace & clear & rst & !keyBackspace & !delete & numbers == 16'd0;
+	assign screenRST = !loadButton & !backspace & !clear & rst & !keyBackspace & !delete & numbers == 16'd0;
 	
 	// user input is loaded by entering values on switches and then press load button
 	
@@ -108,11 +108,11 @@ module Bit_Input (values, in0,in1,in2,in3, loadButton, backspace, clear, rst, cl
 		case (S)
 			AWAITING_ENTRY:
 			begin
-				if (!loadButton)
+				if (loadButton)
 					NS = ENTER_BITS;
-				else if (!backspace || keyBackspace) // when backspace is pressed
+				else if (backspace || keyBackspace) // when backspace is pressed
 					NS = CHECK_CURSOR;
-				else if (!clear || delete)
+				else if (clear || delete)
 					NS = CLEAR;
 				else if (numbers != 16'b0)
 					NS = TRANSLATE;
@@ -125,7 +125,7 @@ module Bit_Input (values, in0,in1,in2,in3, loadButton, backspace, clear, rst, cl
 				NS = LOAD_BUTTON_HELD;
 			LOAD_BUTTON_HELD:
 			begin
-				if (!loadButton || numbers != 16'b0)
+				if (loadButton || numbers != 16'b0)
 					NS = LOAD_BUTTON_HELD;
 				else
 					NS = BITS_ENTERED;
@@ -139,9 +139,11 @@ module Bit_Input (values, in0,in1,in2,in3, loadButton, backspace, clear, rst, cl
 			end
 			SHOW_RESULT:
 			begin
-				if (!backspace)
+				if (nEntered != 5'd16)
+					NS = AWAITING_ENTRY;
+				else if (backspace || keyBackspace)
 					NS = CURSOR_BACK;
-				else if (!clear || delete)
+				else if (clear || delete)
 					NS = AWAITING_ENTRY;
 				else
 					NS = SHOW_RESULT;
@@ -159,7 +161,7 @@ module Bit_Input (values, in0,in1,in2,in3, loadButton, backspace, clear, rst, cl
 				NS = BACKSPACE_HELD;
 			BACKSPACE_HELD:
 			begin
-				if (!backspace || keyBackspace)
+				if (backspace || keyBackspace)
 					NS = BACKSPACE_HELD;
 				else
 					NS = AWAITING_ENTRY;
