@@ -1,16 +1,21 @@
 ﻿Authors: Jayson Rook and Zachary Zampa
-Date: 12/12/2018
+ 
+Date: 12/14/2018
+
 Class: ECE 287
+
 Topic: Triple DES Encryption
 
 
 
 
 Description of Topic:
+
 The purpose the project is to utilize the FPGA board to conduct Triple DES Encryption. The user can enter hexadecimal values through a keyboard or switches on the board. Once 64bits have been entered, the board will run the encryption algorithm and display the encrypted value on the second line.
 
 
 Background Information:
+
 The DES algorithm, as explained here1, takes a 64 bit message and converts it into a string of 64 encrypted bits, using a 64-bit key (of which only 56 are actually used). In order for decryption to be possible, all the operations must not lose information - so the algorithm uses only permutations (swapping the locations of bits) and XOR operations, rather than gates like AND or OR which do not allow an input to be deduced given the output and the other input. Triple DES, which we have implemented, actually performs 3 steps:
 
 
@@ -25,11 +30,13 @@ While DES is now no longer considered secure (it is too easy to crack), triple D
 The difference between encryption and decryption in DES is very slight, in terms of programming. The algorithm transforms the original 64-bit key into 16, 48-bit “subkeys” for use in the 16 main iterations - decrypting a message is achieved simply by reversing the order these subkeys are used.
 
 
-Layman's Description of Design: 
+Layman's Description of Design:
+
 The design works through a user entering values on a keyboard. The programmed board takes these inputs and adjusts where it is inputed accordingly downward. Once the entire input is entered, the board runs through the DES Encryption Process and outputs the result. The encryption process has multiple steps. It begins with swapping the initially inputted bits, based on a set algorithm. Afterwards, the input goes through a series of 16 “rounds”. In any specified round the key gets shifted one bit down slightly. Then, the right half of the message gets expanded from 32 bits to 48 bits by repeating the first and fourth bit of a block on each side. Next, the expanded input is substituted with set substitution values and reduced back to 32 bits. The right half of the message then gets permuted again and swapped with the left half of the message through a process called XOR (which is where the left message half and right half get combined where if two 1s combine a 0 forms, if two 0s combine a 0 forms, and if a 1 and a 0 combine, a 1 forms).  This “round” process repeats a total of 15 more times after the initial. At the end of the rounds, a final permutation occurs and the right and left halves are combined into one full block again. This combined output is the encrypted block. In Triple DES Encryption, this process is repeated two more times. In this, the first stage is done through the first specified key. In the second stage, the encrypted message is decrypted with a second key. This second key is different and will not reproduce the same result as the initial key decrypting. In the third stage, the “decrypted” message is encrypted with the first key again. To decrypt, the entire process is the same, except for the substitution stage, which is done in reverse.
 
 
-Modular Design
+Modular Design:
+
 The project is implemented in 10 Verilog (.v) files:
 * ECE287_Project.v - the top-level entity, which instantiates modules for getting input (Bit_Input) and displaying to screen (LCD_Display)
 
@@ -59,12 +66,14 @@ The project is implemented in 10 Verilog (.v) files:
 
 
 * fFunction.v - implements the Feistel function, an intermediate step used in each round of the DES encryption
+
 Conclusion (Summary of Project and TLDR of Report):
+
 In short, this project allows for a user to encrypt 64 bits of data with Triple DES levels of encryption. The user can also decrypt an encrypted value on the board as well. Part of the security of the board is the key being hidden in the board. This means that one must use a similarly programmed board to decrypt any message received. 
 
 
 How to use
-A video of the system in use can be found here2. The important steps are:
+A video of the system in use can be found at https://youtu.be/E12OgBh-Sj8. The important steps are:
 1. Turn reset switch on (SW17)
 2. Specify encryption or decryption (SW15)
    1. High is decryption, low is encryption
