@@ -4,63 +4,96 @@
  * Class: ECE 287
  * 
  * Extra Information:
- * Hardware is set for 64bits (8bytes) of data which means up to 4 chars can be used
+ * Hardware is set for 64bits (8bytes) of data which means messages and keys are 16 hexadecimal digits
  */
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
 
 
 public class DES_Encryption {
 
-    public static Scanner keyboard = new Scanner(System.in); // keyboard input
-
+	// Main method: hard-code in keys, message, and encryption method to run automatically when executed
 	public static void main(String[] args) {
+		// Hard-code keys and message here
+		boolean[] key1 = hex2bits("133457799bbcdff1", 64);
+		boolean[] key2 = hex2bits("0000000000000000", 64);
+		boolean[] message = hex2bits("0123456789abcdef", 64);
 		
-		String strKey = "133457799BBCDFF1";
-		boolean[][] subKeys = generateSubKeys(hex2bits(strKey, 64));
+		// Choose between single and triple DES here
+		//demoSingleDES(message, key1);
+		demoTripleDES(message, key1, key2);
 		
-		String strMessage = "0123456789ABCDEF";
-		boolean[] message = hex2bits(strMessage, 64);
-		boolean[] encrypted = messageDES(message, subKeys);
-		
-		System.out.println("Original:");
-		displayBits(message, 8);
-		System.out.println("Encrypted:");
-		displayBits(encrypted, 8);
-		
-		
+	} // end main method
+	
+	// Encrypt message with key, then show decrypted output matches original
+	public static void demoSingleDES(boolean[] message, boolean[] key) {
+		// Get subkeys
+		boolean[][] subKeys = generateSubKeys(key);
 		boolean[][] reversedSubKeys = new boolean[16][48];
 		for (int i = 0; i < 16; i++) {
 			reversedSubKeys[i] = subKeys[15-i];
 		}
+		
+		System.out.println("Original:");
+		displayHex(message);
+		displayBits(message, 8);
+		System.out.println();
+		
+		// Forward encrypt and display
+		boolean[] encrypted = messageDES(message, subKeys);
+		System.out.println("Single-DES Encrypted:");
+		displayHex(encrypted);
+		displayBits(encrypted, 8);
+		System.out.println();
+		
+		// Decrypt and display
 		boolean[] decrypted = messageDES(encrypted, reversedSubKeys);
-		
 		System.out.println("Decrypted:");
+		displayHex(decrypted);
 		displayBits(decrypted, 8);
+		System.out.println();
+	}
+	
+	// Triple DES-encrypt message with key1 and key2, then show decrypted output matches original
+	public static void demoTripleDES(boolean[] message, boolean[] key1, boolean[] key2) {
+		// Get subkeys
+		boolean[][] subKeys1 = generateSubKeys(key1);
+		boolean[][] reversedSubKeys1 = new boolean[16][48];
+		for (int i = 0; i < 16; i++) {
+			reversedSubKeys1[i] = subKeys1[15-i];
+		}
+		boolean[][] subKeys2 = generateSubKeys(key2);
+		boolean[][] reversedSubKeys2 = new boolean[16][48];
+		for (int i = 0; i < 16; i++) {
+			reversedSubKeys2[i] = subKeys2[15-i];
+		}
 		
-//		System.out.print("process ints or chars? ");
-//		char choice = keyboard.next().charAt(0);
-//		if (choice == 'i' || choice == 'I')
-//		{
-//			desInt(key);
-//		}
-//
-//		else // invoke char processing method
-//		{
-//			desChar(key);
-//		}
+		System.out.println("Original:");
+		displayHex(message);
+		displayBits(message, 8);
+		System.out.println();
+		
+		// Forward encrypt and display
+		boolean[] encrypted = messageDES(message, subKeys1);
+		encrypted = messageDES(encrypted, reversedSubKeys2);
+		encrypted = messageDES(encrypted, subKeys1);
+		System.out.println("Triple-DES Encrypted:");
+		displayHex(encrypted);
+		displayBits(encrypted, 8);
+		System.out.println();
+		
+		// Decrypt and display
+		boolean[] decrypted = messageDES(encrypted, reversedSubKeys1);
+		decrypted = messageDES(decrypted, subKeys2);
+		decrypted = messageDES(decrypted, reversedSubKeys1);
+		System.out.println("Decrypted:");
+		displayHex(decrypted);
+		displayBits(decrypted, 8);
+		System.out.println();
+	}
 
-
-
-
-
-
-	} // end main method
-
+	// ======================= Lookup tables for permutations =============================== 
+	
 	// Permuted choice lookup tables
-	public static int[] pc1 = new int[] {57, 49, 41, 33, 25, 17, 9, 
+	public static final int[] pc1 = new int[] {57, 49, 41, 33, 25, 17, 9, 
 			1, 58, 50, 42, 34, 26, 18, 
 			10, 2, 59, 51, 43, 35, 27, 
 			19, 11, 3, 60, 52, 44, 36, 
@@ -69,7 +102,7 @@ public class DES_Encryption {
 			14, 6, 61, 53, 45, 37, 29, 
 			21, 13, 5, 28, 20, 12, 4};
 
-	public static int[] pc2 = new int[] {14, 17, 11, 24, 1, 5, 3, 
+	public static final int[] pc2 = new int[] {14, 17, 11, 24, 1, 5, 3, 
 			28, 15, 6, 21, 10, 23, 19, 
 			12, 4, 26, 8, 16, 7, 27, 
 			20, 13, 2, 41, 52, 31, 37, 
@@ -77,7 +110,7 @@ public class DES_Encryption {
 			48, 44, 49, 39, 56, 34, 53, 
 			46, 42, 50, 36, 29, 32};
 	
-	public static int[] initialpermute = new int[] {58, 50, 42, 34, 26, 18, 10, 2, 
+	public static final int[] initialpermute = new int[] {58, 50, 42, 34, 26, 18, 10, 2, 
 			60, 52, 44, 36, 28, 20, 12, 4, 
 			62, 54, 46, 38, 30, 22, 14, 6, 
 			64, 56, 48, 40, 32, 24, 16, 8, 
@@ -86,7 +119,7 @@ public class DES_Encryption {
 			61, 53, 45, 37, 29, 21, 13, 5, 
 			63, 55, 47, 39, 31, 23, 15, 7};
 	
-	public static int[] finalpermute = new int[] {40, 8, 48, 16, 56, 24, 64, 32, 
+	public static final int[] finalpermute = new int[] {40, 8, 48, 16, 56, 24, 64, 32, 
 			39, 7, 47, 15, 55, 23, 63, 31, 
 			38, 6, 46, 14, 54, 22, 62, 30, 
 			37, 5, 45, 13, 53, 21, 61, 29, 
@@ -95,7 +128,7 @@ public class DES_Encryption {
 			34, 2, 42, 10, 50, 18, 58, 26, 
 			33, 1, 41, 9, 49, 17, 57, 25,};
 	
-	public static int[] exPermute = new int[] { 32, 1, 2, 3, 4, 5, 
+	public static final int[] exPermute = new int[] { 32, 1, 2, 3, 4, 5, 
 			4, 5, 6, 7, 8, 9, 
 			8, 9, 10, 11, 12, 13, 
 			12, 13, 14, 15, 16, 17, 
@@ -104,7 +137,7 @@ public class DES_Encryption {
 			24, 25, 26, 27, 28, 29, 
 			28, 29, 30, 31, 32, 1};
 	
-	public static int[][] sBoxes = new int[][] {
+	public static final int[][] sBoxes = new int[][] {
 		
 		{14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7, 
 		0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8, 
@@ -147,8 +180,7 @@ public class DES_Encryption {
 		2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11} // S8
 	};
 	
-	
-	public static int[] P = new int[] {16, 7, 20, 21, 
+	public static final int[] P = new int[] {16, 7, 20, 21, 
 			29, 12, 28, 17, 
 			1, 15, 23, 26, 
 			5, 18, 31, 10, 
@@ -157,30 +189,32 @@ public class DES_Encryption {
 			19, 13, 30, 6, 
 			22, 11, 4, 25};
 	
+	// =================================================================================
 
 	// Given a 64-bit key, generate the 16 subkeys needed for the encryption algorithm
 	public static boolean[][] generateSubKeys(boolean[] key) {
-
+		// Initial permutation of the key
 		boolean[] permutedKey = new boolean[56];
 		for (int i = 0; i < 56; i++) {
 			permutedKey[i] = key[pc1[i]-1];
 		}
 
+		// Split permuted key into halves C and D
 		boolean[][] C = new boolean[17][28];
 		boolean[][] D = new boolean[17][28];
-
 		for (int i = 0; i < 28; i++) {
 			C[0][i] = permutedKey[i];
 			D[0][i] = permutedKey[i+28];
 		}
 
+		// Each C and D is a 1- or 2-position bit shift from the previous
 		int[] shiftSize = new int[] {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
-
 		for (int i = 1; i <= 16; i++) {
 			C[i] = shift(C[i-1], shiftSize[i-1]);
 			D[i] = shift(D[i-1], shiftSize[i-1]);
 		}
 
+		// Effectively concatenate C and D strings, and permute bits in each result using pc-2
 		boolean[][] result = new boolean[16][48];
 		for (int i = 0; i < 16; i++) {
 			for (int j = 0; j < 48; j++) {
@@ -190,8 +224,6 @@ public class DES_Encryption {
 				else
 					result[i][j] = C[i+1][pc2Index];
 			}
-			//System.out.println("K" + (i+1)); // display each subkey (temporarily, for verification)
-			//displayBits(result[i], 6);
 		}
 
 		return result;
@@ -218,89 +250,45 @@ public class DES_Encryption {
 		System.out.println();
 	}
 
+	// Display an array of bits, formatted as a hexadecimal string
+	public static void displayHex(boolean[] bits) {
+		int i = 0;
+		while (i + 4 <= bits.length) {
+			String digitStr = (bits[i] ? "1" : "0") + (bits[i+1] ? "1" : "0") + (bits[i+2] ? "1" : "0") + (bits[i+3] ? "1" : "0");
+			System.out.print(Integer.toHexString(Integer.parseInt(digitStr, 2)));
+			i += 4;
+		}
+		System.out.println();
+	}
 	
-
-
-
-//	// create int array to process
-//	public static int[] intProcess(int[] ogInput)
-//	{
-//
-//		System.out.print("manual or .txt file input? ");
-//		if ("manual".equals(keyboard.next()))
-//		{
-//
-//			System.out.printf("Enter 64 integers ");
-//			for (int count = 0; count < 64; count++)           
-//			{
-//				ogInput[count] = keyboard.nextInt();
-//			}
-//		}
-//		else // do .txt file processing
-//		{
-//			System.out.print("Input .txt file");
-//			Scanner scanFile = null;
-//			try {
-//				scanFile = new Scanner(new File(keyboard.next()));
-//			} catch (FileNotFoundException e) {
-//				e.printStackTrace();
-//			}
-//			int i = 0;
-//			while(scanFile.hasNextInt()){
-//				ogInput[i++] = scanFile.nextInt();
-//			}
-//
-//		}
-//
-//		return ogInput;
-
-//	} // end intProcess method
-
-//	// create char array to process
-//	public static char[] charProcess(char[] ogInput)
-//	{
-//
-//		System.out.print("manual or .txt file input? ");
-//		if ("manual".equals(keyboard.next()))
-//		{
-//
-//			System.out.printf("Enter 4 chars ");
-//			for (int count = 0; count < 4; count++)           
-//			{
-//				ogInput[count] = keyboard.next().charAt(0);
-//			}
-//		}
-//		else // do .txt file processing
-//		{
-//			System.out.print("Input .txt file");
-//			Scanner scanFile = null;
-//			try {
-//				scanFile = new Scanner(new File(keyboard.next()));
-//			} catch (FileNotFoundException e) {
-//				e.printStackTrace();
-//			}
-//			int i = 0;
-//			while(scanFile.hasNext()){
-//				ogInput[i++] = scanFile.next().charAt(0);
-//			}
-//
-//		}
-//
-//		return ogInput;
-//
-//	} // end charProcess method
-	
-	// Convert a hexdecimal string hex into a bit array of length nBits
+	// Convert a hexadecimal string hex into a bit array of length nBits
 	public static boolean[] hex2bits(String hex, int nBits) {
-		 boolean[] bits = new boolean[64];
-         String bitStr = Long.toString(Long.parseLong(hex.toLowerCase(), 16), 2);
-         int bit = nBits - 1;
-         for (int i = 0; i < bitStr.length(); i++) 
-         {
-                 bits[bit] = bitStr.charAt(bitStr.length() - 1 - i) == '1';
-                 bit--;
-         }
-         return bits;
+		
+		// Avoid potential overflow by breaking into 32-bit chunks
+		if (nBits >= 64) {
+			boolean[] result = new boolean[nBits];
+			int chunk = 0;
+			for (int i = 0; i < nBits - 1; i += 32) {
+				int len = Math.min(32, nBits - chunk * 32);
+				boolean[] tempBits = hex2bits(hex.substring(chunk * 8, chunk * 8 + (len / 4)), len);
+				for (int j = 0; j < len; j++) {
+					result[chunk * 32 + j] = tempBits[j];
+				}
+				chunk++;
+			}
+			return result;
+		}
+		
+		// Create the array, padded properly at the start with zeros
+		boolean[] bits = new boolean[nBits];
+        String bitStr = Long.toString(Long.parseLong(hex.toLowerCase(), 16), 2);
+        int bit = nBits - 1;
+        for (int i = 0; i < bitStr.length(); i++) 
+        {
+                bits[bit] = bitStr.charAt(bitStr.length() - 1 - i) == '1';
+                bit--;
+        }
+        return bits;
 	}
 	
 	// modify original message then conduct rounds to encrypt
@@ -324,7 +312,7 @@ public class DES_Encryption {
                     right[i-32] = permutedMessage[i];
             }
             
-            
+            // The 16 encryption rounds, each invoking the f function with a different subkey
             for (int i = 0; i < 16; i++) {
             	boolean[] fOutput = f(right, subkeys[i]);
             	boolean[] temp = xorBits(left, fOutput);
@@ -332,12 +320,14 @@ public class DES_Encryption {
             	right = temp;
             }
             
+            // Concatenate final left / right halves in reverse order
             boolean[] R16L16 = new boolean[64];
             for (int i = 0; i < 32; i++) {
             	R16L16[i] = right[i];
             	R16L16[i+32] = left[i];
             }
             
+            // One last permutation before outputting
             boolean[] encryptedValue = new boolean[64];
             for (int i = 0; i < 64; i++) 
             {
@@ -349,6 +339,7 @@ public class DES_Encryption {
             
 	} // end messageDES method
 	
+	// Bitwise xor performed on equal-length boolean arrays
 	public static boolean[] xorBits(boolean[] bits1, boolean[] bits2) {
 		 boolean[] xorOperated = new boolean[bits1.length];
         for (int i = 0; i < xorOperated.length; i++)
@@ -368,8 +359,6 @@ public class DES_Encryption {
         {
             expanded[i] = R[exPermute[i]-1];
         }
-        // A note: I believe the following expansions are derived from the modified message from the prior round         
-        
         
         // XOR Operation between expanded right and corresponding round key
         boolean[] xorOperated = xorBits(expanded, K);
@@ -377,6 +366,7 @@ public class DES_Encryption {
         boolean[] concatedSValues = new boolean[32];
         int concatedSValuesPosition = 0;
         
+        // Collect new string of values by indexing s boxes
         for (int i = 0; i < 48; i += 6) {
         	int index = sBoxIndex(new boolean[] {xorOperated[i], xorOperated[i+1], xorOperated[i+2],
         			xorOperated[i+3], xorOperated[i+4], xorOperated[i+5]});
@@ -403,6 +393,7 @@ public class DES_Encryption {
 		return result; // result from f function
 	}
 
+	// Determines the 1-d index for an s box, based on the 6 identifying bits
 	public static int sBoxIndex(boolean[] B) {
 		return (B[0] ? 32 : 0)
 				+ (B[1] ? 8 : 0)
